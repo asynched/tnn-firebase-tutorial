@@ -1,5 +1,12 @@
 import { database } from '@/firebase'
-import { collection, getDocs, addDoc, deleteDoc, doc } from 'firebase/firestore'
+import {
+  collection,
+  getDocs,
+  addDoc,
+  deleteDoc,
+  doc,
+  serverTimestamp,
+} from 'firebase/firestore'
 
 export const getBooks = async () => {
   const collectionReference = collection(database, 'books')
@@ -12,7 +19,10 @@ export const getBooks = async () => {
 
 export const addBook = async (book) => {
   const collectionReference = collection(database, 'books')
-  await addDoc(collectionReference, book)
+  await addDoc(collectionReference, {
+    ...book,
+    createdAt: serverTimestamp(),
+  })
 }
 
 export const deleteBook = async (id) => {
