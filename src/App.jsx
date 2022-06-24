@@ -1,6 +1,13 @@
 import { useRef } from 'react'
 import { useBox } from 'blackbox.js'
-import { query, collection, onSnapshot, orderBy } from 'firebase/firestore'
+import {
+  query,
+  collection,
+  onSnapshot,
+  orderBy,
+  doc,
+  getDoc,
+} from 'firebase/firestore'
 
 import { database } from '@/firebase'
 import { storeBox } from '@/store/app'
@@ -29,6 +36,24 @@ onSnapshot(q, (snapshot) => {
   storeBox.set((state) => {
     state.orderedBooks = data
     return state
+  })
+})
+
+// Getting the single document from the backend
+const docRef = doc(database, 'books', 'EegS7qpYUqAveSjwFLHx')
+
+getDoc(docRef).then((doc) => {
+  console.log('Document data (single):', {
+    id: doc.id,
+    ...doc.data(),
+  })
+})
+
+// Sets up a real-time listener for the document
+onSnapshot(docRef, (doc) => {
+  console.log('Realtime listener:', {
+    id: doc.id,
+    ...doc.data(),
   })
 })
 
