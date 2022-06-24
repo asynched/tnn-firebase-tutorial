@@ -1,6 +1,7 @@
+import { collection, onSnapshot, query, where } from 'firebase/firestore'
+
 import { h } from '@/lib/dom'
 import { database } from '@/firebase'
-import { collection, onSnapshot } from 'firebase/firestore'
 import { addBook, deleteBook } from '@/services/books'
 
 const BookItem = (book) =>
@@ -9,7 +10,7 @@ const BookItem = (book) =>
     attrs: null,
     children: [
       book.title,
-      '-',
+      ' - ',
       book.author,
       h({
         tag: 'button',
@@ -50,4 +51,18 @@ onSnapshot(collection(database, 'books'), (snapshot) => {
   }))
 
   renderBooks(books)
+})
+
+const q = query(
+  collection(database, 'books'),
+  where('author', '==', 'Patrick Rothfuss')
+)
+
+onSnapshot(q, (snapshot) => {
+  const data = snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }))
+
+  console.log(data)
 })
